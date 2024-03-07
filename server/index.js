@@ -16,11 +16,10 @@ const connectionPrams = {
 
 mongoose.connect(dbURL, connectionPrams).then(()=> {
     console.log('DB connected');
+    app.listen(8080, ()=>{
+        console.log("Server Started");
+    })
 }).catch((e)=>{console.log("Error: ", e)})
-
-const listener = app.listen(8080, ()=>{
-    console.log("listening on port ", listener.address().port);
-})
 
 
 const schema = new mongoose.Schema({
@@ -42,14 +41,15 @@ const schema = new mongoose.Schema({
     source: String,
     title: String,
     likelihood: Number
-}, {versionKey: false});
+});
+    // }, {versionKey: false});
 
 const blackcoffer = mongoose.model("blackcoffer", schema);
 
 app.get("/fetchall", async (req, res)=>{
-    const Item = await blackcoffer.find();    
+    const Item = await blackcoffer.find({intensity: 6});    
     console.log(Item);
-    return Item
+    res.send(Item);
     // then(function(Item){
     //     console.log(Item);
     //     res.send(JSON.stringify(Item));
@@ -62,9 +62,3 @@ app.get("/fetchall", async (req, res)=>{
     //     }
     // })
 })
-
-// const data = async()=>{
-//     const response = await fetch('https://localhost:3000/fetchall').then(res=>console.log(res))
-// }
-
-// data();
